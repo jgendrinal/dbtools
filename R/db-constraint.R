@@ -19,7 +19,7 @@ new_db_constraint <- function(x = list(),
   assert_that(is.string(name))
   x$name <- name
 
-  new_db_obj(x, class = c(class, "db_constraint"))
+  new_db_obj(x, ..., class = c(class, "db_constraint"))
 }
 
 #' @export

@@ -20,8 +20,7 @@ db_constraint_fkey <- function(
   name = NULL
 ) {
 
-  assert_that(inherits(table, "db_table"))
-  assert_that(inherits(foreign_table, "db_table"))
+
 
   column <- db_select(table, {{ column }})[[1]]
   foreign_column <- if (rlang::quo_text(enexpr(foreign_column)) == "NULL") {
@@ -29,9 +28,6 @@ db_constraint_fkey <- function(
   } else {
     db_select(foreign_table, {{ foreign_column }})[[1]]
   }
-
-  assert_that(inherits(column, "db_column"))
-  assert_that(inherits(foreign_column, "db_column"))
 
   db_constraint(
     table      = table,
@@ -60,6 +56,9 @@ new_db_constraint_fkey <- function(
   .class = character()
 ) {
 
+  assert_that(inherits(table, "db_table"))
+  assert_that(inherits(foreign_table, "db_table"))
+
   .x$table <- table
   .x$foreign_table <- foreign_table
   .x$column <- column
@@ -72,6 +71,9 @@ new_db_constraint_fkey <- function(
   on_delete <- arg_match(on_delete)
   assert_that(is.string(on_delete))
   .x$on_delete <- on_delete
+
+  assert_that(inherits(column, "db_column"))
+  assert_that(inherits(foreign_column, "db_column"))
 
   name <- name %||% glue(
     "{db_name(table)}_{db_name(column)}-",

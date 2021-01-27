@@ -38,6 +38,7 @@ print.db_table <- function(x) {
   NextMethod(x)
   purrr::walk(x$columns, print)
   purrr::walk(x$constraints, print)
+  purrr::walk(x$indexes, print)
 }
 
 

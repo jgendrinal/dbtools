@@ -35,6 +35,9 @@ new_db_constraint_unique <- function(table, columns, name = NULL,
   assert_that(is.string(name))
   .x$name <- ident(name)
 
+  assert_that(columns %all_inherits% "db_column")
+  .x$columns <- columns
+
   new_db_constraint(
     x     = .x,
     name  = name,

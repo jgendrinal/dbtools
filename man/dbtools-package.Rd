@@ -8,6 +8,14 @@
 \description{
 A tibble based data mapper style ORM for R
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/tjpalanca/dbtools}
+  \item Report bugs at \url{https://github.com/tjpalanca/dbtools/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Troy James Palanca \email{mail@tjpalanca.com} (\href{https://orcid.org/0000-0002-0610-9213}{ORCID})
 
