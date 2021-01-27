@@ -39,3 +39,5 @@ Imports:
     stringr,
     tidyselect,
     snakecase
+URL: https://github.com/tjpalanca/dbtools
+BugReports: https://github.com/tjpalanca/dbtools/issues
