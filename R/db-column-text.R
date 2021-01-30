@@ -16,7 +16,7 @@ db_column_text <- function(name,
   new_db_column(
     x        = .x,
     name     = name,
-    default  = default,
+    default  = {{ default }},
     validate = validate,
     nullable = nullable,
     class    = c(.class, "db_column_text")
@@ -29,6 +29,17 @@ db_validate.db_column_text <- function(x, value) {
     validate_that(is.character(value)),
     validate_that(is.infinite(x$max_char) || all(nchar(value) <= x$max_char),
                   msg = "Maximum character length breached."),
-    NextMethod(x, value)
+    NextMethod()
   )
+}
+
+#' @export
+db_sql_postgres.db_column_text <- function(x, conn, data_type = NULL) {
+  data_type <- data_type %||%
+    if (is.infinite(x$max_char)) {
+      "TEXT"
+    } else {
+      glue("VARCHAR({x$max_char})")
+    }
+  NextMethod(data_type = data_type)
 }

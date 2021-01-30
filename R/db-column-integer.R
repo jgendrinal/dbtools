@@ -12,7 +12,7 @@ db_column_integer <- function(name,
                               intrange = 2147483647L,
                               validate = function(value) {},
                               nullable = TRUE,
-                              identity = c("none", "default", "always"),
+                              identity = c("none", "by default", "always"),
                               .x       = list(),
                               .class   = character()) {
   assert_that(
@@ -30,7 +30,7 @@ db_column_integer <- function(name,
   new_db_column(
     x        = .x,
     name     = name,
-    default  = default,
+    default  = {{ default }},
     validate = validate,
     nullable = nullable,
     class    = c(.class, "db_column_integer")
@@ -41,13 +41,27 @@ db_column_integer <- function(name,
 db_validate.db_column_integer <- function(x, value) {
   validate_set(
     validate_that(is.integer(value) || is.integer64(value)),
-    validate_that(all(value >= -x$intrange),
-                  all(value <=  x$intrange),
+    validate_that(all(value >= -x$intrange), all(value <=  x$intrange),
                   msg = "Integer overflow"),
     if (x$identity != "none") {
       validate_that(n_distinct(value) == length(value),
                     msg = "Integers must be unique due to identity constraint")
     },
-    NextMethod(x, value)
+    NextMethod()
   )
+}
+
+#' @export
+db_sql_postgres.db_column_integer <- function(x, conn) {
+  data_type <- if (x$intrange <= 32767L) {
+    "SMALLINT"
+  } else if (x$intrange <= 2147483647L) {
+    "INTEGER"
+  } else {
+    "BIGINT"
+  }
+  if (x$identity != "none") {
+    data_type <- glue("{data_type} GENERATED {toupper(x$identity)} AS IDENTITY")
+  }
+  NextMethod(data_type = data_type)
 }

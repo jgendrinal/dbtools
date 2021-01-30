@@ -1,8 +1,6 @@
 #' @import dbplyr
 #' @import dbx
 #' @import cli
-#' @import DBI
-#' @import pool
 #' @import bit64
 #' @import logger
 #' @importFrom digest
@@ -39,11 +37,13 @@
 #'             %||%
 #'             arg_match
 #'             enexpr expr is_expression
+#'             quo_text
 #' @importFrom glue
 #'             glue
 #'             glue_collapse
 #' @importFrom dplyr
 #'             na_if
+#'             tbl
 #' @keywords internal
 "_PACKAGE"
 

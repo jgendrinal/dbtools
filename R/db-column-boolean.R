@@ -11,7 +11,7 @@ db_column_boolean <- function(name,
   new_db_column(
     x        = .x,
     name     = name,
-    default  = default,
+    default  = {{ default }},
     validate = validate,
     nullable = nullable,
     class    = c(.class, "db_column_boolean")
@@ -22,6 +22,11 @@ db_column_boolean <- function(name,
 db_validate.db_column_boolean <- function(x, value) {
   validate_set(
     validate_that(is.logical(value)),
-    NextMethod(x, value)
+    NextMethod()
   )
+}
+
+#' @export
+db_sql_postgres.db_column_boolean <- function(x, conn) {
+  NextMethod(data_type = "BOOLEAN")
 }

@@ -1,3 +1,4 @@
+#' @export
 db_connection_factory <- function(slug,
                                   adapter = "postgres",
                                   host = NULL,
@@ -16,15 +17,19 @@ db_connection_factory <- function(slug,
       ...
     )
   })
-  function() {
-    test <- try({dbGetQuery(db_connection(), "select 1")})
-    if (inherits(test, "try-error")) {
-      warn(glue("Connection to {host} was refreshed as it was invalid"))
-      forget(db_connection)
-    } else {
-      db_connection()
-    }
-  }
+  structure(
+    function() {
+      test <- try({dbxSelect(db_connection(), "select 1")})
+      if (inherits(test, "try-error")) {
+        warn(glue("Connection to {host} was refreshed as it was invalid"))
+        forget(db_connection)
+      } else {
+        db_connection()
+      }
+    },
+    class = "db_connection_factory"
+  )
 }
 
+#' @export
 db_tjpalanca <- db_connection_factory("tjpalanca")

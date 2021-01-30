@@ -20,7 +20,7 @@ new_db_column(
 
 \item{name}{name of the column, as string}
 
-\item{default}{default value of the column in SQL code, default no default}
+\item{default}{default value of the column in expression}
 
 \item{validate}{function that takes the value as an argument, returns
 TRUE or NULL if the provided data is valid, throws an error

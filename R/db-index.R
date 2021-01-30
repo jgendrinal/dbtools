@@ -13,20 +13,21 @@ db_index <- function(table, index) {
 #' @param unique  whether or not index must be on unique values
 #' @param partial if partial index, R expression that defines the bounds of the
 #'                index, but NULL if not partial
-#' @export
 new_db_index <- function(x = list(),
+                         table,
                          name,
                          ...,
                          unique  = FALSE,
                          partial = NULL,
                          class   = character()) {
 
+  assert_that(inherits(table, "db_table"))
   assert_that(is.string(name))
-  x$name <- name
-
   assert_that(is.flag(unique))
-  x$unique <- unique
 
+  x$table   <- table
+  x$name    <- name
+  x$unique  <- unique
   x$partial <- enexpr(partial)
 
   new_db_obj(

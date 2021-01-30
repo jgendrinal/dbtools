@@ -9,6 +9,7 @@ db_index(table, index)
 
 new_db_index(
   x = list(),
+  table,
   name,
   ...,
   unique = FALSE,

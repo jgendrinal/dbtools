@@ -10,7 +10,7 @@ NULL
 
 #' @rdname db_column
 #' @param name     name of the column, as string
-#' @param default  default value of the column in SQL code, default no default
+#' @param default  default value of the column in expression
 #' @param validate function that takes the value as an argument, returns
 #'                 TRUE or NULL if the provided data is valid, throws an error
 #'                 or returns anything other than a TRUE value.
@@ -18,7 +18,6 @@ NULL
 #' @param class    sub-classes as character string
 #' @param x        base type (list)
 #' @param ...      extra attributes
-#' @export
 new_db_column <- function(x = list(),
                           name,
                           default  = NULL,
@@ -30,11 +29,10 @@ new_db_column <- function(x = list(),
   assert_that(is.string(name))
   x$name <- ident(name)
 
-  if (!is.null(default)) {
-    assert_that(is.string(default))
-    x$default <- sql(default)
+  x$default <- if (quo_text(enexpr(default)) == "NULL") {
+    default
   } else {
-    x$default <- default
+    enexpr(default)
   }
 
   assert_that(is.function(validate) && validate %has_args% "value")
@@ -60,4 +58,21 @@ db_validate.db_column <- function(x, value) {
 #' @export
 db_generate.db_column <- function(x, value) {
   value
+}
+
+#' @export
+db_sql_postgres.db_column <- function(x, conn, data_type, ...) {
+  assert_that(is.string(data_type))
+  assert_that(nchar(x$name) <= db_max_id_length(conn),
+              msg = "Column name is too long!")
+  build_sql(
+    x$name, " ", sql(data_type),
+    if (!x$nullable) sql(" NOT NULL"),
+    if (!is.null(x$default)) build_sql(
+      " DEFAULT ",
+      sql_expr(!!x$default[[2]], con = conn),
+      con = conn
+    ),
+    con = conn
+  )
 }

@@ -29,16 +29,13 @@ new_db_constraint_pkey <- function(table, columns, name = NULL,
                                    .x = list(),
                                    .class = character()) {
 
-  name <- name %||% {
-    table_name   <- db_name(table)
-    column_names <- paste0(map_chr(columns, db_name), collapse = "_")
-    glue("{table_name}-{column_names}-pkey")
-  }
-  assert_that(is.string(name))
-  .x$name <- ident(name)
-
   assert_that(columns %all_inherits% "db_column")
   .x$columns <- columns
+
+  name <- name %||% glue("{db_name(table)}-{db_name(columns)}-pkey")
+
+  assert_that(is.string(name))
+  .x$name <- ident(name)
 
   new_db_constraint(
     x     = .x,
@@ -46,4 +43,16 @@ new_db_constraint_pkey <- function(table, columns, name = NULL,
     class = c(.class, "db_constraint_pkey")
   )
 
+}
+
+#' @export
+db_sql_postgres.db_constraint_pkey <- function(x, conn) {
+  NextMethod(
+    definition = build_sql(
+      sql("PRIMARY KEY ( "),
+      db_sql_postgres(x$columns, conn),
+      sql(" )"),
+      con = conn
+    )
+  )
 }

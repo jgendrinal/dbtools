@@ -20,13 +20,11 @@ db_constraint_fkey <- function(
   name = NULL
 ) {
 
-
-
-  column <- db_select(table, {{ column }})[[1]]
-  foreign_column <- if (rlang::quo_text(enexpr(foreign_column)) == "NULL") {
-    db_select(foreign_table, db_name(column))[[1]]
+  column <- db_select(table, {{ column }})
+  foreign_column <- if (quo_text(enexpr(foreign_column)) == "NULL") {
+    db_select(foreign_table, map_chr(column, db_name))
   } else {
-    db_select(foreign_table, {{ foreign_column }})[[1]]
+    db_select(foreign_table, {{ foreign_column }})
   }
 
   db_constraint(
@@ -72,12 +70,12 @@ new_db_constraint_fkey <- function(
   assert_that(is.string(on_delete))
   .x$on_delete <- on_delete
 
-  assert_that(inherits(column, "db_column"))
-  assert_that(inherits(foreign_column, "db_column"))
+  assert_that(column %all_inherits% "db_column")
+  assert_that(foreign_column %all_inherits% "db_column")
 
   name <- name %||% glue(
     "{db_name(table)}_{db_name(column)}-",
-    "{db_name(foreign_table)}_{db_name(foreign_column)}-",
+    "{db_name(foreign_table)}_{db_name(foriegn_column)}-",
     "fkey"
   )
   assert_that(is.string(name))
@@ -89,4 +87,15 @@ new_db_constraint_fkey <- function(
     class = c(.class, "db_constraint_fkey")
   )
 
+}
+
+#' @export
+db_sql_postgres.db_constraint_fkey <- function(x, conn) {
+  NextMethod(
+    definition = build_sql(
+      "FOREIGN KEY (", db_sql_postgres(x$column, conn), ") ",
+      "REFERENCES ", db_sql_postgres(x$foreign_table, conn), "(",
+      db_sql_postgres(x$foreign_column, conn), ")"
+    )
+  )
 }

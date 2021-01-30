@@ -10,7 +10,6 @@ db_constraint <- function(table, constraint) {
 
 #' @rdname db_constraint
 #' @param name constraint name
-#' @export
 new_db_constraint <- function(x = list(),
                               name,
                               ...,
@@ -25,4 +24,12 @@ new_db_constraint <- function(x = list(),
 #' @export
 db_name.db_constraint <- function(x) {
   x$name
+}
+
+#' @export
+db_sql_postgres.db_constraint <- function(x, conn, definition) {
+  build_sql(
+    sql("CONSTRAINT"), x$name, sql(definition),
+    con = conn
+  )
 }

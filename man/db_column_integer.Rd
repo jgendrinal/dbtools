@@ -10,7 +10,7 @@ db_column_integer(
   intrange = 2147483647L,
   validate = function(value) { },
   nullable = TRUE,
-  identity = c("none", "default", "always"),
+  identity = c("none", "by default", "always"),
   .x = list(),
   .class = character()
 )

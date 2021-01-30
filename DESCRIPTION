@@ -28,7 +28,6 @@ Imports:
     memoise,
     uuid,
     jsonlite,
-    pool,
     RPostgres,
     bit64,
     rlang,

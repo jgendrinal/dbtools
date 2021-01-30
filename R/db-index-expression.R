@@ -40,17 +40,14 @@ new_db_index_expression <- function(table,
   assert_that(is_expression(expression))
   .x$expression <- expression
 
-  name <- name %||% {
-    table_name <- db_name(table)
-    expression_hash <- digest(expression)
-    glue("{table_name}-{expression_hash}-index")
-  }
-  assert_that(is.string(name))
-  .x$name <- ident(name)
-
   new_db_index(
     x       = .x,
-    name    = name,
+    table   = table,
+    name    = name %||% {
+      table_name      <- db_name(table)
+      expression_hash <- digest::digest(expression)
+      glue("{table_name}-{expression_hash}-index")
+    },
     unique  = unique,
     partial = partial,
     class   = c(.class, "db_index_expression")

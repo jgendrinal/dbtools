@@ -33,20 +33,17 @@ new_db_index_column <- function(table,
                                 .x      = list(),
                                 .class  = character()) {
 
-  name <- name %||% {
-    table_name   <- db_name(table)
-    column_names <- paste0(map_chr(columns, db_name), collapse = "_")
-    glue("{table_name}-{column_names}-index")
-  }
-  assert_that(is.string(name))
-  .x$name <- ident(name)
-
   assert_that(columns %all_inherits% "db_column")
   .x$columns <- columns
 
   new_db_index(
     x       = .x,
-    name    = name,
+    table   = table,
+    name    = name %||% {
+      table_name   <- db_name(table)
+      column_names <- paste0(map_chr(columns, db_name), collapse = "_")
+      glue("{table_name}-{column_names}-index")
+    },
     unique  = unique,
     partial = partial,
     class   = c(.class, "db_index_columns")
