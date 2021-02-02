@@ -75,7 +75,7 @@ new_db_constraint_fkey <- function(
 
   name <- name %||% glue(
     "{db_name(table)}_{db_name(column)}-",
-    "{db_name(foreign_table)}_{db_name(foriegn_column)}-",
+    "{db_name(foreign_table)}_{db_name(foreign_column)}-",
     "fkey"
   )
   assert_that(is.string(name))
@@ -93,9 +93,10 @@ new_db_constraint_fkey <- function(
 db_sql_postgres.db_constraint_fkey <- function(x, conn) {
   NextMethod(
     definition = build_sql(
-      "FOREIGN KEY (", db_sql_postgres(x$column, conn), ") ",
-      "REFERENCES ", db_sql_postgres(x$foreign_table, conn), "(",
-      db_sql_postgres(x$foreign_column, conn), ")"
+      sql("FOREIGN KEY "), db_sql_postgres(x$column, conn),
+      sql(" REFERENCES "), db_sql_postgres(x$foreign_table, conn), " ",
+      db_sql_postgres(x$foreign_column, conn),
+      con = conn
     )
   )
 }

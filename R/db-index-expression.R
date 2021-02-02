@@ -18,10 +18,10 @@ db_index_expression <- function(table,
     table = table,
     index = new_db_index_expression(
       table      = table,
-      expression = expression,
+      expression = {{ expression }},
       name       = name,
       unique     = unique,
-      partial    = partial
+      partial    = {{ partial }}
     )
   )
 
@@ -49,8 +49,18 @@ new_db_index_expression <- function(table,
       glue("{table_name}-{expression_hash}-index")
     },
     unique  = unique,
-    partial = partial,
+    partial = {{ partial }},
     class   = c(.class, "db_index_expression")
   )
 
+}
+
+#' @export
+db_sql_postgres.db_index_expression <- function(x, conn) {
+  NextMethod(
+    definition = build_sql(
+      "(", sql_expr(!!x$expression[[2]], con = conn), ")",
+      con = conn
+    )
+  )
 }

@@ -20,13 +20,23 @@ db_sql_postgres_create <- function(x, conn) {
 
 #' @export
 db_sql_postgres_create.db_table <- function(x, conn) {
+  c(
+    build_sql(
+      sql("CREATE TABLE "), db_sql_postgres(x, conn), " ",
+      append(
+        unname(map(x$columns, db_sql_postgres, conn = conn)),
+        unname(map(x$constraints, db_sql_postgres, conn = conn))
+      ),
+      con = conn
+    ),
+    sql(unname(map_chr(x$indexes, db_sql_postgres_create, conn = conn)))
+  )
+}
+
+#' @export
+db_sql_postgres_create.db_index <- function(x, conn) {
   build_sql(
-    sql("CREATE TABLE "), db_sql_postgres(x, conn), " (\n",
-    sql(glue_collapse(
-      map_chr(x$columns, db_sql_postgres, conn = conn),
-      sep = ",\n"
-    )),
-    "\n);",
+    sql("CREATE "), db_sql_postgres(x, conn),
     con = conn
   )
 }
@@ -34,11 +44,9 @@ db_sql_postgres_create.db_table <- function(x, conn) {
 #' @export
 db_sql_postgres.list <- function(x, conn) {
   if (x %all_inherits% "db_column") {
-    build_sql(
-      sql(glue_collapse(map_chr(x, "name"), sep = ', ')),
-      conn = con
-    )
+    build_sql(unname(map(x, "name")), con = conn)
   } else {
-    NextMethod()
+    stop("Unsupported list")
   }
 }
+

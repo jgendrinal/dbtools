@@ -28,8 +28,10 @@ db_name.db_constraint <- function(x) {
 
 #' @export
 db_sql_postgres.db_constraint <- function(x, conn, definition) {
+  assert_that(nchar(x$name) <= db_max_id_length(conn),
+              msg = "Constraint name too long!")
   build_sql(
-    sql("CONSTRAINT"), x$name, sql(definition),
+    sql("CONSTRAINT "), ident(x$name), " ", sql(definition),
     con = conn
   )
 }

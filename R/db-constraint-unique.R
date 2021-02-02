@@ -45,3 +45,14 @@ new_db_constraint_unique <- function(table, columns, name = NULL,
   )
 
 }
+
+#' @export
+db_sql_postgres.db_constraint_unique <- function(x, conn) {
+  NextMethod(
+    definition = build_sql(
+      sql("UNIQUE "), db_sql_postgres(x$columns, conn = conn),
+      con = conn
+    )
+  )
+}
+

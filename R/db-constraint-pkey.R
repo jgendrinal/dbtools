@@ -49,9 +49,7 @@ new_db_constraint_pkey <- function(table, columns, name = NULL,
 db_sql_postgres.db_constraint_pkey <- function(x, conn) {
   NextMethod(
     definition = build_sql(
-      sql("PRIMARY KEY ( "),
-      db_sql_postgres(x$columns, conn),
-      sql(" )"),
+      sql("PRIMARY KEY "), db_sql_postgres(x$columns, conn),
       con = conn
     )
   )

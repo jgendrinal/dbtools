@@ -26,7 +26,7 @@ new_db_index <- function(x = list(),
   assert_that(is.flag(unique))
 
   x$table   <- table
-  x$name    <- name
+  x$name    <- ident(name)
   x$unique  <- unique
   x$partial <- enexpr(partial)
 
@@ -40,4 +40,21 @@ new_db_index <- function(x = list(),
 #' @export
 db_name.db_index <- function(x) {
   as.character(x$name)
+}
+
+#' @export
+db_sql_postgres.db_index <- function(x, conn, definition) {
+  build_sql(
+    if (x$unique) sql("UNIQUE INDEX ") else sql("INDEX "),
+    x$name, sql(" ON "), db_sql_postgres(x$table, conn), " ",
+    sql(definition),
+    if (quo_text(x$partial) != "NULL") {
+      build_sql(
+        sql(" WHERE "),
+        sql_expr(!!x$partial[[2]], con = conn),
+        con = conn
+      )
+    },
+    con = conn
+  )
 }

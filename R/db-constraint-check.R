@@ -42,3 +42,14 @@ new_db_constraint_check <- function(table, check, name = NULL,
   )
 
 }
+
+#' @export
+db_sql_postgres.db_constraint_check <- function(x, conn) {
+  NextMethod(
+    definition = build_sql(
+      sql("CHECK "), "(", sql_expr(!!x$check[[2]], con = conn), ")",
+      con = conn
+    )
+  )
+}
+
