@@ -38,7 +38,6 @@ new_db_index_column <- function(table,
 
   new_db_index(
     x       = .x,
-    table   = table,
     name    = name %||% {
       table_name   <- db_name(table)
       column_names <- paste0(map_chr(columns, db_name), collapse = "_")
@@ -52,11 +51,12 @@ new_db_index_column <- function(table,
 }
 
 #' @export
-db_sql_postgres.db_index_column <- function(x, conn) {
+db_sql_postgres.db_index_column <- function(x, conn, table, ...) {
   NextMethod(
     definition = build_sql(
       db_sql_postgres(x$columns, conn),
       con = conn
-    )
+    ),
+    table = table
   )
 }

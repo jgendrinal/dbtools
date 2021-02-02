@@ -5,12 +5,11 @@
 \title{Boolean Column}
 \usage{
 db_column_boolean(
+  table,
   name,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

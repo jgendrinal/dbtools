@@ -5,12 +5,11 @@
 \title{UUID Column}
 \usage{
 db_column_uuid(
+  table,
   name,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

@@ -5,13 +5,12 @@
 \title{JSON Column}
 \usage{
 db_column_json(
+  table,
   name,
   binary = TRUE,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

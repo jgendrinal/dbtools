@@ -5,12 +5,11 @@
 \title{Date Column}
 \usage{
 db_column_date(
+  table,
   name,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

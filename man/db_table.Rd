@@ -4,7 +4,7 @@
 \alias{db_table}
 \title{Database Table}
 \usage{
-db_table(name, ..., schema = NULL, .x = list(), .class = character())
+db_table(name, schema = NULL, .x = list(), .class = character())
 }
 \description{
 Database Table

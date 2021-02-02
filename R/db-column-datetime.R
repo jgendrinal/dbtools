@@ -2,12 +2,29 @@
 #' Date-Time (Timestamp) Column
 #'
 #' @export
-db_column_datetime <- function(name,
+db_column_datetime <- function(table,
+                               name,
                                default  = NULL,
                                validate = function(value) {},
-                               nullable = TRUE,
-                               .x       = list(),
-                               .class   = character()) {
+                               nullable = TRUE) {
+  db_column(
+    table  = table,
+    column = new_db_column_datetime(
+      name     = name,
+      default  = {{ default }},
+      validate = validate,
+      nullable = nullable
+    )
+  )
+
+}
+
+new_db_column_datetime <- function(name,
+                                   default  = NULL,
+                                   validate = function(value) {},
+                                   nullable = TRUE,
+                                   .x       = list(),
+                                   .class   = character()) {
   new_db_column(
     x        = .x,
     name     = name,

@@ -5,6 +5,8 @@
 \alias{new_db_column}
 \title{Database Column}
 \usage{
+db_column(table, column)
+
 new_db_column(
   x = list(),
   name,

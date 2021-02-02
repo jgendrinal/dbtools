@@ -2,13 +2,31 @@
 #' JSON Column
 #'
 #' @export
-db_column_json <- function(name,
+db_column_json <- function(table,
+                           name,
                            binary   = TRUE,
                            default  = NULL,
                            validate = function(value) {},
-                           nullable = TRUE,
-                           .x       = list(),
-                           .class   = character()) {
+                           nullable = TRUE) {
+  db_column(
+    table  = table,
+    column = new_db_column_json(
+      name     = name,
+      binary   = binary,
+      default  = {{ default }},
+      validate = validate,
+      nullable = nullable
+    )
+  )
+}
+
+new_db_column_json <- function(name,
+                               binary   = TRUE,
+                               default  = NULL,
+                               validate = function(value) {},
+                               nullable = TRUE,
+                               .x       = list(),
+                               .class   = character()) {
   assert_that(is.flag(binary))
   .x$binary <- binary
   new_db_column(

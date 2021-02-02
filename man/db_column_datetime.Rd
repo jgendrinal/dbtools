@@ -5,12 +5,11 @@
 \title{Date-Time (Timestamp) Column}
 \usage{
 db_column_datetime(
+  table,
   name,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

@@ -24,8 +24,8 @@ db_constraint_unique <- function(table,
 }
 
 new_db_constraint_unique <- function(table, columns, name = NULL,
-                                   .x = list(),
-                                   .class = character()) {
+                                     .x = list(),
+                                     .class = character()) {
 
   name <- name %||% {
     table_name   <- db_name(table)

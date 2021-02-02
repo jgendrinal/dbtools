@@ -42,7 +42,6 @@ new_db_index_expression <- function(table,
 
   new_db_index(
     x       = .x,
-    table   = table,
     name    = name %||% {
       table_name      <- db_name(table)
       expression_hash <- digest::digest(expression)
@@ -56,11 +55,12 @@ new_db_index_expression <- function(table,
 }
 
 #' @export
-db_sql_postgres.db_index_expression <- function(x, conn) {
+db_sql_postgres.db_index_expression <- function(x, conn, table, ...) {
   NextMethod(
     definition = build_sql(
       "(", sql_expr(!!x$expression[[2]], con = conn), ")",
       con = conn
-    )
+    ),
+    table = table
   )
 }

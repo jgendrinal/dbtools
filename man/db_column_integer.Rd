@@ -5,14 +5,13 @@
 \title{Integer Column}
 \usage{
 db_column_integer(
+  table,
   name,
   default = NULL,
-  intrange = 2147483647L,
+  int_type = c("integer", "smallint", "bigint"),
   validate = function(value) { },
   nullable = TRUE,
-  identity = c("none", "by default", "always"),
-  .x = list(),
-  .class = character()
+  identity = c("none", "by default", "always")
 )
 }
 \arguments{
@@ -22,8 +21,6 @@ db_column_integer(
 \item \code{"default"} - can be overwritten on insert
 \item \code{"always"}  - can not be overwritten
 }}
-
-\item{integer}{integers will be bound within the range \link{-intrange, +intrange}}
 }
 \description{
 Integer Column

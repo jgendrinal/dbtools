@@ -3,13 +3,31 @@
 #'
 #' @param max_char maximum length
 #' @export
-db_column_text <- function(name,
+db_column_text <- function(table,
+                           name,
                            default  = NULL,
                            max_char = Inf,
                            validate = function(value) {},
-                           nullable = TRUE,
-                           .x       = list(),
-                           .class   = character()) {
+                           nullable = TRUE) {
+  db_column(
+    table  = table,
+    column = new_db_column_text(
+      name     = name,
+      default  = {{ default }},
+      max_char = max_char,
+      validate = validate,
+      nullable = nullable
+    )
+  )
+}
+
+new_db_column_text <- function(name,
+                               default  = NULL,
+                               max_char = Inf,
+                               validate = function(value) {},
+                               nullable = TRUE,
+                               .x       = list(),
+                               .class   = character()) {
   assert_that(is.number(max_char) && max_char >= 1,
               msg = "Maximum characters should be a positive integer.")
   .x$max_char <- max_char

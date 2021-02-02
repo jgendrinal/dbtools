@@ -6,7 +6,12 @@
 #' structure of a database table.
 #'
 #' @name db_column
-NULL
+db_column <- function(table, column) {
+  assert_that(inherits(table, "db_table"))
+  assert_that(!db_name(column) %in% names(table$column))
+  table$columns[[db_name(column)]] <- column
+  table
+}
 
 #' @rdname db_column
 #' @param name     name of the column, as string
@@ -75,4 +80,9 @@ db_sql_postgres.db_column <- function(x, conn, data_type, ...) {
     ),
     con = conn
   )
+}
+
+#' @export
+db_dependencies.db_column <- function(x) {
+  NULL
 }

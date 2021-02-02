@@ -1,32 +1,43 @@
 #' @title
 #' Integer Column
 #'
-#' @param integer integers will be bound within the range [-intrange, +intrange]
 #' @param identity is this an identity column? Can be:
 #' * `"none"`    - not an identity column
 #' * `"default"` - can be overwritten on insert
 #' * `"always"`  - can not be overwritten
 #' @export
-db_column_integer <- function(name,
+db_column_integer <- function(table,
+                              name,
                               default  = NULL,
-                              intrange = 2147483647L,
+                              int_type = c("integer", "smallint", "bigint"),
                               validate = function(value) {},
                               nullable = TRUE,
-                              identity = c("none", "by default", "always"),
-                              .x       = list(),
-                              .class   = character()) {
-  assert_that(
-    is.number(intrange) && intrange >= 1L && (
-      is.integer(intrange) || is.integer64(intrange)
-    ),
-    msg = "Integer range should be a positive integer"
+                              identity = c("none", "by default", "always")) {
+  db_column(
+    table  = table,
+    column = new_db_column_integer(
+      name     = name,
+      default  = {{ default }},
+      int_type = int_type,
+      validate = validate,
+      nullable = nullable,
+      identity = identity
+    )
   )
-  assert_that(intrange <= as.integer64(9223372036854774784),
-              msg = "Maximum integer is 9223372036854774784")
-  identity <- arg_match(identity)
-  assert_that(is.string(identity))
-  .x$identity <- identity
-  .x$intrange <- intrange
+}
+
+new_db_column_integer <- function(name,
+                                  default  = NULL,
+                                  int_type = c("integer", "smallint", "bigint"),
+                                  validate = function(value) {},
+                                  nullable = TRUE,
+                                  identity = c("none", "by default", "always"),
+                                  .x       = list(),
+                                  .class   = character()) {
+
+  .x$identity <- arg_match(identity)
+  .x$int_type <- arg_match(int_type)
+
   new_db_column(
     x        = .x,
     name     = name,
@@ -41,8 +52,15 @@ db_column_integer <- function(name,
 db_validate.db_column_integer <- function(x, value) {
   validate_set(
     validate_that(is.integer(value) || is.integer64(value)),
-    validate_that(all(value >= -x$intrange), all(value <=  x$intrange),
-                  msg = "Integer overflow"),
+    validate_that(
+      abs(value) <= switch(
+        x$int_type,
+        "smallint" = 32767L,
+        "integer"  = 2147483647L,
+        "bigint"   = as.integer64(9223372036854774784)
+      ),
+      msg = "Integer is beyond the maximum range for the field"
+    ),
     if (x$identity != "none") {
       validate_that(n_distinct(value) == length(value),
                     msg = "Integers must be unique due to identity constraint")
@@ -53,13 +71,7 @@ db_validate.db_column_integer <- function(x, value) {
 
 #' @export
 db_sql_postgres.db_column_integer <- function(x, conn) {
-  data_type <- if (x$intrange <= 32767L) {
-    "SMALLINT"
-  } else if (x$intrange <= 2147483647L) {
-    "INTEGER"
-  } else {
-    "BIGINT"
-  }
+  data_type <- toupper(x$int_type)
   if (x$identity != "none") {
     data_type <- glue("{data_type} GENERATED {toupper(x$identity)} AS IDENTITY")
   }

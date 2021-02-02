@@ -5,13 +5,12 @@
 \title{Text Column}
 \usage{
 db_column_text(
+  table,
   name,
   default = NULL,
   max_char = Inf,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \arguments{

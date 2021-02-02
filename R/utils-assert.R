@@ -6,6 +6,10 @@
   purrr::none(x, ~inherits(., class_name))
 }
 
+is_named <- function(x) {
+  !is.null(names(x)) && !any(names(x) == "")
+}
+
 validate_set <- function(...) {
   validations <- purrr::discard(list(...), ~isTRUE(. %||% TRUE))
   validations <- if (length(validations) == 0) {

@@ -14,7 +14,11 @@ db_constraint_check <- function(table,
 
   db_constraint(
     table      = table,
-    constraint = new_db_constraint_check(table, {{ check }}, name)
+    constraint = new_db_constraint_check(
+      table = table,
+      check = {{ check }},
+      name  = name
+    )
   )
 
 }

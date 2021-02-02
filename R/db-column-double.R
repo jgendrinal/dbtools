@@ -2,12 +2,28 @@
 #' Double Precision Column
 #'
 #' @export
-db_column_double <- function(name,
+db_column_double <- function(table,
+                             name,
                              default  = NULL,
                              validate = function(value) {},
-                             nullable = TRUE,
-                             .x       = list(),
-                             .class   = character()) {
+                             nullable = TRUE) {
+  db_column(
+    table  = table,
+    column = new_db_column_double(
+      name     = name,
+      default  = {{ default }},
+      validate = validate,
+      nullable = nullable
+    )
+  )
+}
+
+new_db_column_double <- function(name,
+                                 default  = NULL,
+                                 validate = function(value) {},
+                                 nullable = TRUE,
+                                 .x       = list(),
+                                 .class   = character()) {
   new_db_column(
     x        = .x,
     name     = name,

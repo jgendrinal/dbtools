@@ -5,12 +5,11 @@
 \title{Binary Column}
 \usage{
 db_column_binary(
+  table,
   name,
   default = NULL,
   validate = function(value) { },
-  nullable = TRUE,
-  .x = list(),
-  .class = character()
+  nullable = TRUE
 )
 }
 \description{

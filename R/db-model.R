@@ -1,14 +1,11 @@
 #' @export
-db_model <- function(name, conn, ..., .x = list(), .class = character()) {
+db_model <- function(name, ..., .x = list(), .class = character()) {
 
-  tables <- list(...)
+  tables <- db_eval(...)
   assert_that(tables %all_inherits% "db_table")
-  assert_that(is.function(conn))
-  assert_that(inherits(conn(), "DBIConnection"))
   assert_that(is.string(name))
 
-  .x$tables <- db_raise_names(tables)
-  .x$conn   <- conn
+  .x$tables <- tables
   .x$name   <- name
 
   new_db_obj(.x, class = c(.class, "db_model"))

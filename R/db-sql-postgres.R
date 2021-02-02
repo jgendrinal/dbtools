@@ -4,7 +4,7 @@ db_sql_postgres <- function(x, conn, ...) {
 }
 
 #' @export
-db_sql_postgres.default <-function(x, conn) {
+db_sql_postgres.default <-function(x, conn, ...) {
   .NotYetImplemented()
 }
 
@@ -14,7 +14,7 @@ db_sql_postgres.db_migration_create <- function(x, conn, ...) {
 }
 
 #' @export
-db_sql_postgres_create <- function(x, conn) {
+db_sql_postgres_create <- function(x, conn, ...) {
   UseMethod("db_sql_postgres_create")
 }
 
@@ -29,14 +29,19 @@ db_sql_postgres_create.db_table <- function(x, conn) {
       ),
       con = conn
     ),
-    sql(unname(map_chr(x$indexes, db_sql_postgres_create, conn = conn)))
+    sql(unname(map_chr(
+      x$indexes,
+      db_sql_postgres_create,
+      conn = conn,
+      table = x
+    )))
   )
 }
 
 #' @export
-db_sql_postgres_create.db_index <- function(x, conn) {
+db_sql_postgres_create.db_index <- function(x, conn, table) {
   build_sql(
-    sql("CREATE "), db_sql_postgres(x, conn),
+    sql("CREATE "), db_sql_postgres(x, conn, table),
     con = conn
   )
 }

@@ -5,13 +5,29 @@
 #' A Universally Unique Identifier column
 #'
 #' @export
-db_column_uuid <- function(name,
+db_column_uuid <- function(table,
+                           name,
                            default  = NULL,
                            validate = function(value) {},
-                           nullable = TRUE,
-                           .x       = list(),
-                           .class   = character()) {
-  db_column_text(
+                           nullable = TRUE) {
+  db_column(
+    table  = table,
+    column = new_db_column_uuid(
+      name     = name,
+      default  = {{ default }},
+      validate = validate,
+      nullable = nullable
+    )
+  )
+}
+
+new_db_column_uuid <- function(name,
+                               default  = NULL,
+                               validate = function(value) {},
+                               nullable = TRUE,
+                               .x       = list(),
+                               .class   = character()) {
+  new_db_column_text(
     .x       = .x,
     max_char = 36L,
     name     = name,

@@ -23,3 +23,19 @@ db_select <- function(table, ...) {
   selected
 
 }
+
+db_eval <- function(...) {
+  purrr::reduce(
+    rlang::enquos(...),
+    function(objects, obj) {
+      append(
+        objects,
+        db_raise_names(list(rlang::eval_tidy(
+          obj,
+          data = objects
+        )))
+      )
+    },
+    .init = NULL
+  )
+}

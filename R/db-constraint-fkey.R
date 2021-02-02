@@ -54,10 +54,8 @@ new_db_constraint_fkey <- function(
   .class = character()
 ) {
 
-  assert_that(inherits(table, "db_table"))
   assert_that(inherits(foreign_table, "db_table"))
 
-  .x$table <- table
   .x$foreign_table <- foreign_table
   .x$column <- column
   .x$foreign_column <- foreign_column

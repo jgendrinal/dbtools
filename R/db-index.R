@@ -14,18 +14,15 @@ db_index <- function(table, index) {
 #' @param partial if partial index, R expression that defines the bounds of the
 #'                index, but NULL if not partial
 new_db_index <- function(x = list(),
-                         table,
                          name,
                          ...,
                          unique  = FALSE,
                          partial = NULL,
                          class   = character()) {
 
-  assert_that(inherits(table, "db_table"))
   assert_that(is.string(name))
   assert_that(is.flag(unique))
 
-  x$table   <- table
   x$name    <- ident(name)
   x$unique  <- unique
   x$partial <- enexpr(partial)
@@ -43,10 +40,10 @@ db_name.db_index <- function(x) {
 }
 
 #' @export
-db_sql_postgres.db_index <- function(x, conn, definition) {
+db_sql_postgres.db_index <- function(x, conn, definition, table, ...) {
   build_sql(
     if (x$unique) sql("UNIQUE INDEX ") else sql("INDEX "),
-    x$name, sql(" ON "), db_sql_postgres(x$table, conn), " ",
+    x$name, sql(" ON "), db_sql_postgres(table, conn), " ",
     sql(definition),
     if (quo_text(x$partial) != "NULL") {
       build_sql(

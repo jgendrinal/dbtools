@@ -35,3 +35,8 @@ db_sql_postgres.db_constraint <- function(x, conn, definition) {
     con = conn
   )
 }
+
+#' @export
+db_dependencies.db_constraint <- function(x) {
+  NULL
+}

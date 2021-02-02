@@ -3,7 +3,6 @@
 #'
 #' @export
 db_table <- function(name,
-                     ...,
                      schema = NULL,
                      .x = list(),
                      .class = character()) {
@@ -14,10 +13,7 @@ db_table <- function(name,
   assert_that(is.null(schema) || is.string(schema))
   .x$schema <- if (is.null(schema)) NULL else ident(schema)
 
-  columns <- list(...)
-  assert_that(columns %all_inherits% "db_column")
-  .x$columns <- db_raise_names(columns)
-
+  .x$columns <- list()
   .x$constraints <- list()
   .x$indexes <- list()
 
@@ -42,13 +38,6 @@ print.db_table <- function(x) {
 }
 
 #' @export
-db_table_add_schema <- function(table, schema) {
-  assert_that(is.null(schema) || is.string(schema))
-  table$schema <- if (is.null(schema)) NULL else ident(schema)
-  table
-}
-
-#' @export
 db_sql_postgres.db_table <- function(x, conn) {
   assert_that(is.null(x$schema) || nchar(x$schema) <= db_max_id_length(conn),
               msg = "Schema name is too long!")
@@ -60,4 +49,9 @@ db_sql_postgres.db_table <- function(x, conn) {
     x$name,
     con = conn
   )
+}
+
+#' @export
+db_dependencies.db_table <- function(table) {
+
 }

@@ -33,6 +33,11 @@ db_generate <- function(x, value) {
 }
 
 #' @export
+db_dependencies <- function(x) {
+  UseMethod("db_dependencies")
+}
+
+#' @export
 db_classes.db_obj <- function(x, full = FALSE) {
   class_string <- if (full) {
     paste0(rev(class(x)), collapse = ":")
